@@ -4,6 +4,8 @@ import Destinations from '../components/Destinations';
 import WhyChooseUs from '../components/WhyChooseUs';
 import WhatsAppButton from '../components/WhatsAppButton';
 import { Link } from 'react-router-dom';
+import swissImg from '../assets/switzerland.png';
+import maldivesImg from '../assets/maldives.png';
 
 const Home = () => {
     useEffect(() => {
@@ -38,10 +40,10 @@ const Home = () => {
                     <div className="visual-side reveal">
                         <div className="image-stack">
                             <div className="main-img-box">
-                                <img src="/src/assets/switzerland.png" alt="Travel" />
+                                <img src={swissImg} alt="Travel" />
                             </div>
                             <div className="sub-img-box">
-                                <img src="/src/assets/maldives.png" alt="Travel" />
+                                <img src={maldivesImg} alt="Travel" />
                             </div>
                             <div className="floating-badge">
                                 <span className="number">7+</span>
