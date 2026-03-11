@@ -5,7 +5,7 @@ const PackageDetailPage = () => {
     const { id } = useParams();
     const [pkg, setPkg] = useState(null);
     const [loading, setLoading] = useState(true);
-    const API_BASE = '/api';
+    const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
     useEffect(() => {
         window.scrollTo(0, 0);

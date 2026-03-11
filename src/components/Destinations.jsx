@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // Static Fallbacks
 import swissImg from '../assets/switzerland.png';
@@ -30,17 +30,23 @@ const fallbackDestinations = [
 
 const Destinations = () => {
   const [destinations, setDestinations] = useState([]);
-  const API_BASE = '/api';
+  const [filteredDestinations, setFilteredDestinations] = useState([]);
+  const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+  const location = useLocation();
 
   useEffect(() => {
     fetchDestinations();
   }, []);
 
+  useEffect(() => {
+    filterData();
+  }, [destinations, location.search]);
+
   const fetchDestinations = async () => {
     try {
       const res = await fetch(`${API_BASE}/destinations`);
       const data = await res.json();
-      if (data.length > 0) {
+      if (data && data.length > 0) {
         setDestinations(data);
       } else {
         setDestinations(fallbackDestinations);
@@ -49,6 +55,23 @@ const Destinations = () => {
       console.error("Error fetching destinations:", error);
       setDestinations(fallbackDestinations);
     }
+  };
+
+  const filterData = () => {
+    const params = new URLSearchParams(location.search);
+    const searchQuery = params.get('q')?.toLowerCase() || '';
+
+    let filtered = [...destinations];
+
+    if (searchQuery) {
+      filtered = filtered.filter(dest =>
+        dest.name.toLowerCase().includes(searchQuery) ||
+        dest.location.toLowerCase().includes(searchQuery) ||
+        dest.intro?.toLowerCase().includes(searchQuery)
+      );
+    }
+
+    setFilteredDestinations(filtered);
   };
 
   return (
@@ -62,48 +85,58 @@ const Destinations = () => {
         </div>
 
         <div className="destinations-grid">
-          {destinations.map((dest, idx) => (
-            <div key={dest._id} className="dest-card reveal" style={{ transitionDelay: `${idx * 0.2}s` }}>
-              <div className="image-wrapper">
-                <img
-                  src={dest.image}
-                  alt={dest.name}
-                  loading="lazy"
-                />
-                <div className="img-overlay"></div>
+          {filteredDestinations.length > 0 ? (
+            filteredDestinations.map((dest, idx) => (
+              <div key={dest._id} className="dest-card reveal" style={{ transitionDelay: `${idx * 0.1}s` }}>
+                <div className="image-wrapper">
+                  <img
+                    src={dest.image}
+                    alt={dest.name}
+                    loading="lazy"
+                  />
+                  <div className="img-overlay"></div>
 
-                <div className="card-top-badges">
-                  <span className="dest-tag-premium">{dest.tag}</span>
-                  <div className="rating-pill">
-                    <span className="star">★</span> {dest.rating}
+                  <div className="card-top-badges">
+                    <span className="dest-tag-premium">{dest.tag}</span>
+                    <div className="rating-pill">
+                      <span className="star">★</span> {dest.rating}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="dest-content-glass">
+                  <div className="content-inner">
+                    <div className="dest-top-meta">
+                      <span className="loc-text">{dest.location}</span>
+                      {dest.price && <span className="price-tag">{dest.price}</span>}
+                    </div>
+                    <h3>{dest.name}</h3>
+                    <div className="dest-meta-row">
+                      <span className="duration-pill">
+                        {dest.duration}
+                      </span>
+                    </div>
+                    <p className="dest-intro-text">{dest.intro}</p>
+
+                    <div className="dest-actions">
+                      <Link to={`/package/${dest._id}`} className="btn-explore-elite">
+                        View More
+                        <span className="btn-line"></span>
+                      </Link>
+                      <Link to="/plan-my-trip" className="btn-enquiry-circle">
+                        <span className="icon">→</span>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <div className="dest-content-glass">
-                <div className="content-inner">
-                  <span className="loc-text">{dest.location}</span>
-                  <h3>{dest.name}</h3>
-                  <div className="dest-meta-row">
-                    <span className="duration-pill">
-                      {dest.duration}
-                    </span>
-                  </div>
-                  <p className="dest-intro-text">{dest.intro}</p>
-
-                  <div className="dest-actions">
-                    <Link to={`/package/${dest._id}`} className="btn-explore-elite">
-                      View More
-                      <span className="btn-line"></span>
-                    </Link>
-                    <Link to="/plan-my-trip" className="btn-enquiry-circle">
-                      <span className="icon">→</span>
-                    </Link>
-                  </div>
-                </div>
-              </div>
+            ))
+          ) : (
+            <div className="no-results" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '4rem' }}>
+              <h3>No destinations found matching your search.</h3>
+              <p>Try searching for another city or country!</p>
             </div>
-          ))}
+          )}
         </div>
 
         <div className="footer-callout reveal">
@@ -132,7 +165,9 @@ const Destinations = () => {
         .dest-tag-premium { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); color: white; padding: 8px 16px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border: 1px solid rgba(255, 255, 255, 0.2); }
         .rating-pill { background: var(--primary); color: white; padding: 6px 14px; border-radius: 50px; font-weight: 800; font-size: 0.8rem; box-shadow: 0 5px 15px rgba(0, 200, 133, 0.3); }
         .dest-content-glass { position: absolute; bottom: 2rem; left: 2rem; right: 2rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 2.5rem; z-index: 10; color: white; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1); }
-        .loc-text { color: var(--primary); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8rem; display: block; }
+        .dest-top-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; }
+        .price-tag { background: rgba(255, 255, 255, 0.1); padding: 4px 12px; border-radius: 8px; font-weight: 900; color: var(--primary); font-size: 0.9rem; border: 1px solid rgba(0, 200, 133, 0.3); }
+        .loc-text { color: var(--primary); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; display: block; }
         .dest-content-glass h3 { font-size: 2rem; margin-bottom: 1.2rem; color: white; font-weight: 900; letter-spacing: -0.5px; }
         .duration-pill { font-size: 0.85rem; font-weight: 600; opacity: 0.8; border-left: 2px solid var(--primary); padding-left: 10px; }
         .dest-intro-text { font-size: 1rem; line-height: 1.6; opacity: 0; max-height: 0; overflow: hidden; transition: all 0.6s ease; margin-bottom: 0; }

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Manrope:wght@200..800&display=swap');
+
 :root {
   --primary: #00c885;
   --primary-dark: #00a56e;
@@ -14,13 +16,16 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
-  --max-width: 1280px;
+  --max-width: 1400px;
+  /* Slightly wider for modern laptops */
 
   font-family: 'Manrope', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
+  line-height: 1.6;
+  /* Better readability */
   font-weight: 400;
   color: var(--text);
   background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
 }
 
 .text-gradient {
@@ -76,7 +81,8 @@ button {
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 5%;
+  /* Percentage-based padding for better flex */
 }
 
 /* Glassmorphism utility */
@@ -102,6 +108,15 @@ button {
 
 .reveal {
   animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes cinematicZoom {
+  from { transform: scale(1.1); }
+  to { transform: scale(1); }
+}
+
+.animate-zoom {
+  animation: cinematicZoom 10s ease-out forwards;
 }
 
 /* Button variants */
@@ -134,23 +149,50 @@ section {
   padding: 6rem 0;
 }
 
-@media (max-width: 1200px) {
+/* Responsive Design System */
+@media (max-width: 1440px) {
   :root {
     font-size: 15px;
   }
+}
 
-  .container {
-    padding: 0 1.5rem;
+@media (max-width: 1200px) {
+  :root {
+    font-size: 14px;
+  }
+
+  .grid-2 {
+    gap: 3rem !important;
+  }
+}
+
+@media (max-width: 992px) {
+  section {
+    padding: 5rem 0;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 4rem !important;
   }
 }
 
 @media (max-width: 768px) {
   :root {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   section {
     padding: 4rem 0;
+  }
+
+  h1 {
+    font-size: 3rem !important;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 2.2rem !important;
   }
 
   .section-title {
@@ -160,6 +202,22 @@ section {
 }
 
 @media (max-width: 480px) {
+  :root {
+    font-size: 12px;
+  }
+
+  h1 {
+    font-size: 2.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.8rem !important;
+  }
+
+  .container {
+    padding: 0 20px !important;
+  }
+
   .section-title {
     font-size: 1.8rem;
   }

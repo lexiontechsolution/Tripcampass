@@ -21,6 +21,7 @@ const AdminPage = () => {
         duration: '',
         rating: '5.0',
         tag: 'Best Package',
+        category: 'premium',
         intro: '',
         price: '',
         itinerary: '', // String in form, array in DB
@@ -28,7 +29,7 @@ const AdminPage = () => {
     });
     const [editId, setEditId] = useState(null);
 
-    const API_BASE = '/api';
+    const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -49,7 +50,7 @@ const AdminPage = () => {
 
     const fetchEnquiries = async () => {
         try {
-            const response = await fetch('/api/enquiry', {
+            const response = await fetch(`${API_BASE}/admin/enquiries`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
             });
             const data = await response.json();
@@ -181,7 +182,7 @@ const AdminPage = () => {
                         </div>
                         <button type="submit" className="login-btn">Secure Login</button>
                     </form>
-                    <div className="login-hint">Admin: sanjay_admin / Sanjay@30</div>
+                    <div className="login-hint">Admin: admin / admin123@</div>
                 </div>
                 <style>{`
                     .login-screen { 
@@ -307,6 +308,15 @@ const AdminPage = () => {
                                     <div className="form-group">
                                         <label>Price (e.g. $1,200)</label>
                                         <input type="text" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Category</label>
+                                        <select value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} style={{ width: '100%', padding: '0.9rem', borderRadius: '12px', border: '1px solid #e0e0e0' }}>
+                                            <option value="premium">Premium</option>
+                                            <option value="couple">Couple</option>
+                                            <option value="family">Family/Friends</option>
+                                            <option value="solo">Solo</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div className="form-group">

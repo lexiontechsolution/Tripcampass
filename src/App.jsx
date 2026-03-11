@@ -8,6 +8,7 @@ import AboutPage from './pages/AboutPage';
 import PlanTripPage from './pages/PlanTripPage';
 import AdminPage from './pages/AdminPage';
 import PackageDetailPage from './pages/PackageDetailPage';
+import CategoryPage from './pages/CategoryPage';
 
 function AppContent() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function AppContent() {
           <Route path="/plan-my-trip" element={<PlanTripPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/package/:id" element={<PackageDetailPage />} />
+          <Route path="/category/:category" element={<CategoryPage />} />
         </Routes>
       </main>
       {!isAdmin && <Footer />}

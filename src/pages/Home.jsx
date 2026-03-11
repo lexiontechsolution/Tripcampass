@@ -8,8 +8,25 @@ import swissImg from '../assets/switzerland.png';
 import maldivesImg from '../assets/maldives.png';
 
 const Home = () => {
+    const [stats, setStats] = React.useState({ destinations: '500+', happy: '5K+', success: '95%' });
+    const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        // Fetch stats
+        fetch(`${API_BASE}/stats`)
+            .then(res => res.json())
+            .then(data => {
+                if (data) {
+                    setStats({
+                        destinations: `${data.destinations}+`,
+                        happy: data.happyTravelers,
+                        success: '98%' // Keeping success rate static or from data if available
+                    });
+                }
+            })
+            .catch(err => console.error("Home stats error:", err));
 
         const observerOptions = {
             threshold: 0.15,
@@ -34,7 +51,8 @@ const Home = () => {
         <div className="home-page">
             <Hero />
 
-            {/* 🟢 Experience Section */}
+
+            {/* �🟢 Experience Section */}
             <section className="experience-showcase">
                 <div className="container grid-2">
                     <div className="visual-side reveal">
@@ -82,6 +100,7 @@ const Home = () => {
                 </div>
             </section>
 
+
             {/* 🔵 Featured Curations */}
             <Destinations />
 
@@ -90,15 +109,15 @@ const Home = () => {
                 <div className="container">
                     <div className="trust-grid">
                         <div className="trust-item reveal">
-                            <h3>5K+</h3>
+                            <h3>{stats.happy}</h3>
                             <p>Happy Travelers served</p>
                         </div>
                         <div className="trust-item reveal" style={{ transitionDelay: '0.1s' }}>
-                            <h3>500+</h3>
+                            <h3>{stats.destinations}</h3>
                             <p>Best Hotel Partners</p>
                         </div>
                         <div className="trust-item reveal" style={{ transitionDelay: '0.2s' }}>
-                            <h3>95%</h3>
+                            <h3>{stats.success}</h3>
                             <p>Visa Success Record</p>
                         </div>
                         <div className="trust-item reveal" style={{ transitionDelay: '0.3s' }}>
@@ -129,7 +148,8 @@ const Home = () => {
 
             <style>{`
                 .home-page { overflow-x: hidden; }
-                
+
+
                 /* Experience Showcase */
                 .experience-showcase { padding: 10rem 0; background: #fff; }
                 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
