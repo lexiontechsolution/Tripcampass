@@ -182,7 +182,7 @@ const AdminPage = () => {
                         </div>
                         <button type="submit" className="login-btn">Secure Login</button>
                     </form>
-                    <div className="login-hint">Admin: admin / admin123@</div>
+                    <div className="login-hint">Admin</div>
                 </div>
                 <style>{`
                     .login-screen { 
