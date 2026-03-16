@@ -14,6 +14,7 @@ const PlanTripPage = () => {
 
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
+  const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -29,7 +30,7 @@ const PlanTripPage = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await fetch('/api/enquiry', {
+      const response = await fetch(`${API_BASE}/enquiry`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
